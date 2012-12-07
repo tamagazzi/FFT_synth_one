@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT id="HD3SzR" name="FFT_synth_one" projectType="audioplug" version="1.0.0"
+              bundleIdentifier="com.yourcompany.FFT_synth_one" buildVST="1"
+              buildRTAS="0" buildAU="1" pluginName="FFT_synth_one" pluginDesc="FFT_synth_one"
+              pluginManufacturer="yourcompany" pluginManufacturerCode="Manu"
+              pluginCode="Plug" pluginChannelConfigs="{1, 1}, {2, 2}" pluginIsSynth="1"
+              pluginWantsMidiIn="1" pluginProducesMidiOut="0" pluginSilenceInIsSilenceOut="0"
+              pluginTailLength="0" pluginEditorRequiresKeys="0" pluginAUExportPrefix="FFT_synth_oneAU"
+              pluginAUViewClass="FFT_synth_oneAU_V1" pluginRTASCategory=""
+              jucerVersion="3.0.0">
+  <EXPORTFORMATS>
+    <XCODE_MAC targetFolder="Builds/MacOSX" objCExtraSuffix="a7Ax5O" juceFolder="../../../juce/modules"
+               vstFolder="~/SDKs/vstsdk2.4" extraLinkerFlags="-lfftw3">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="FFT_synth_one"
+                       osxSDK="default" osxCompatibility="default" osxArchitecture="default"
+                       libraryPath="../../Libraries/FFTW"/>
+        <CONFIGURATION name="Release" isDebug="0" optimisation="2" targetName="FFT_synth_one"
+                       osxSDK="default" osxCompatibility="default" osxArchitecture="default"
+                       libraryPath="../../Libraries/FFTW"/>
+      </CONFIGURATIONS>
+    </XCODE_MAC>
+  </EXPORTFORMATS>
+  <MAINGROUP id="wlhN77" name="FFT_synth_one">
+    <GROUP id="{0CC52A75-2260-DD3C-8D5B-C7211C9620E8}" name="Libraries">
+      <GROUP id="{ABE907E4-FD58-0990-420E-219082C12C69}" name="FFTW">
+        <FILE id="zG3JMU" name="fftw3.h" compile="0" resource="0" file="Libraries/FFTW/fftw3.h"/>
+        <FILE id="LxVyBS" name="libfftw3.a" compile="0" resource="1" file="Libraries/FFTW/libfftw3.a"/>
+      </GROUP>
+    </GROUP>
+    <GROUP id="{62A811EF-21D7-C9B3-0E9F-BE89EFD78D80}" name="Source">
+      <FILE id="ik8kP6" name="FastFourierTransformer.cpp" compile="1" resource="0"
+            file="Source/FastFourierTransformer.cpp"/>
+      <FILE id="ubKRNp" name="FastFourierTransformer.h" compile="0" resource="0"
+            file="Source/FastFourierTransformer.h"/>
+      <FILE id="fJgMOw" name="PluginProcessor.cpp" compile="1" resource="0"
+            file="Source/PluginProcessor.cpp"/>
+      <FILE id="otb37N" name="PluginProcessor.h" compile="0" resource="0"
+            file="Source/PluginProcessor.h"/>
+      <FILE id="YzIVNN" name="PluginEditor.cpp" compile="1" resource="0"
+            file="Source/PluginEditor.cpp"/>
+      <FILE id="PW7u1C" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
+    </GROUP>
+  </MAINGROUP>
+  <MODULES>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="1"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="1"/>
+    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="1"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="1"/>
+    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="1"/>
+    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="1"/>
+    <MODULE id="juce_gui_audio" showAllCode="1" useLocalCopy="1"/>
+    <MODULE id="juce_cryptography" showAllCode="1" useLocalCopy="1"/>
+    <MODULE id="juce_video" showAllCode="1" useLocalCopy="1"/>
+    <MODULE id="juce_opengl" showAllCode="1" useLocalCopy="1"/>
+    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="1"/>
+    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="1"/>
+    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="1"/>
+    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="1"/>
+    <MODULE id="juce_audio_plugin_client" showAllCode="1" useLocalCopy="1"/>
+    <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="1"/>
+  </MODULES>
+  <JUCEOPTIONS JUCE_QUICKTIME="disabled"/>
+</JUCERPROJECT>

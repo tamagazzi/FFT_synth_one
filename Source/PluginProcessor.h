@@ -69,6 +69,8 @@ private:
 	
 	FastFourierTransformer* fft;
 	fftw_complex*			fftData;
+	int						nfft, Fs;
+	float					phase;
 	
     //==============================================================================
 	

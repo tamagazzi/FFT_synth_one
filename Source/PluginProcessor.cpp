@@ -120,12 +120,28 @@ void Fft_synth_oneAudioProcessor::prepareToPlay (double sampleRate, int samplesP
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
+	
+	// Plan initialisation
+	nfft = samplesPerBlock; // As a starter. we then should aim at a finer resolution.
+	Fs = sampleRate;
+	
+	if (fft == NULL){
+		fft = new FastFourierTransformer(nfft);
+	}	
+
+	fftData = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * nfft);
+	
+	// Phase init
+	phase = 0;
+	
+	
 }
 
 void Fft_synth_oneAudioProcessor::releaseResources()
 {
     // When playback stops, you can use this as an opportunity to free up any
     // spare memory, etc.
+	fftw_free(fftData);
 }
 
 void Fft_synth_oneAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
@@ -138,18 +154,50 @@ void Fft_synth_oneAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
     for (int channel = 0; channel < getNumInputChannels(); ++channel)
     {
 		// declare a channelData array of length bufsize=nfft
-        float* channelData = buffer.getSampleData(bufsize);
+		float* channelData ;
+		channelData = new float[bufsize];
 
-        // define a fftData array of length bufsize
+        // define a fftData array of length bufsize (done in prepare to play)
 		// all zeros and one 1 somewhere in the first half
 		// put the 1 symmetrically in the second half (real = real, imag = - imag)
 		
-		// if array index = k
-		// then corresponding frequency is Fs/nfft*k
+		float freq; // fundamental Frequency in Hz, should be filled by a slider later on.
+		int freqIndex; // corresponding index in the fftData array
+		freq = 440; // Hz. Must be < Fs/2 (Nyquist theorem).
+		freqIndex = floor(freq*nfft/Fs); // if array index = k, then corresponding frequency is Fs/nfft*k
+		float amplitude; // linear amplitude of the fundamental frequency 
+		amplitude=0.5; //(0.5 linear = -6 dBFS).
+		
+		fftData[0][0] = 0.0  ; // DC filter
+		fftData[0][1] = 0.0 ;
+		fftData[nfft/2][0] = 0.0  ; // Nyquist
+		fftData[nfft/2][1] = 0.0 ;
+		
+		for (int i=1; i<(nfft/2);i++)
+		{
+			if (i==freqIndex){
+				fftData[i][0]=amplitude*cos(phase); // real=magnitude*cos(phase)
+				fftData[i][1]=amplitude*sin(phase); // imag=magnitude*sin(phase)
+			}
+			else {
+				fftData[i][0]=0;
+				fftData[i][1]=0;
+			}
+			fftData[nfft-i][0]= fftData[i][0] ; // Fill up the second half symmetrically, real = real
+			fftData[nfft-i][1]= -fftData[i][1] ; // Fill up the second half symmetrically, imag=-imag
+		}
 		
 		
 		// do the backward fft
 		fft->processBackward(fftData, channelData, bufsize); // inverse fft
+		
+		// output the time data to audioBuffer
+		buffer.copyFrom(0, 0, channelData, bufsize);
+		delete [] channelData;
+		
+		// Compute the phase shift of the fundamental during this buffer:
+		// shift = 2.pi.freq.elapsedTime = 2.pi.freq.bufsize/Fs
+		phase += fmod ( 2*M_PI*freq*bufsize/Fs, 2*M_PI ) ; // we delete any 2*PI rotations, in order to keep the phase within limits.
 		
     }
 

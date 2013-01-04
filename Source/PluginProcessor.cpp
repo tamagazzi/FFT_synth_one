@@ -132,7 +132,7 @@ void Fft_synth_oneAudioProcessor::prepareToPlay (double sampleRate, int samplesP
 	
 	// Plan initialisation
 	nfft = samplesPerBlock; // As a starter. we then should aim at a finer resolution. this is(hopefully) the same as bufsize
-	nfft = 8192;
+	// nfft = 8192;
 	Fs   = sampleRate;
 	
 	if (fft == NULL){
@@ -158,11 +158,12 @@ void Fft_synth_oneAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
 	while (iterator.getNextEvent (msg, sampleNum)){
 	  if (msg.isNoteOn()){
 	    freqs[msg.getNoteNumber()] = msg.getFloatVelocity();
+		  phase[msg.getNoteNumber()] = M_PI/2;
 	  }else if(msg.isNoteOff()){
 	    freqs[msg.getNoteNumber()] = 0.0;
 	  }
 		
-	if(keyboard != NULL)
+	if (keyboard != NULL) 
 	  keyboard->processNextMidiEvent(msg);
 	}
 
@@ -245,6 +246,7 @@ void Fft_synth_oneAudioProcessor::setKeyboardState(MidiKeyboardState* state){
 
 void Fft_synth_oneAudioProcessor::handleNoteOn(MidiKeyboardState *source, int midiChannel, int midiNoteNumber, float velocity){
   freqs[midiNoteNumber] = velocity;
+	phase[midiNoteNumber] = M_PI/2;
 }
 
 void Fft_synth_oneAudioProcessor::handleNoteOff(MidiKeyboardState *source, int midiChannel, int midiNoteNumber){

@@ -146,58 +146,41 @@ void Fft_synth_oneAudioProcessor::releaseResources()
 void Fft_synth_oneAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
 {
 	
-	int bufsize = buffer.getNumSamples();
-	
-	
+	int bufsize = buffer.getNumSamples();	
 	juce::MidiBuffer output;	
 	juce::MidiBuffer::Iterator iterator (midiMessages);
 	juce::MidiMessage msg;
 	int sampleNum;
-	float MIDIfreq;
-	
+	float freq;
 
-	while (iterator.getNextEvent (msg, sampleNum))
-	{
-		if (msg.isNoteOnOrOff())
-		{
-//			msg.setNoteNumber (msg.getNoteNumber());
-		}
-		
-		if (msg.isNoteOn())
-		{
-			MIDIfreq = MidiMessage::getMidiNoteInHertz(msg.getNoteNumber());
-		}
-		
-		output.addEvent (msg, sampleNum);
+	while (iterator.getNextEvent (msg, sampleNum)){
+	  if (msg.isNoteOn()){
+	    freq = MidiMessage::getMidiNoteInHertz(msg.getNoteNumber());
+	  }else if(msg.isNoteOff()){
+	    freq = 0.0;
+	  }
+	  output.addEvent (msg, sampleNum);
 	}
-	
-	midiMessages = output;
-	
 
     // This is the place where you'd normally do the guts of your plugin's
     // audio processing...
     for (int channel = 0; channel < getNumInputChannels(); ++channel)
     {
 		// declare a channelData array of length bufsize=nfft
-		float*		  channelData ;
-		channelData = new float[bufsize];
-	
+                float* channelData = buffer.getSampleData (channel);		
 		
 		// Pass any incoming midi messages to our keyboard state object, and let it
 		// add messages to the buffer if the user is clicking on the on-screen keys
 		
-        // define a fftData array of length bufsize (done in prepare to play)
+                // define a fftData array of length bufsize (done in prepare to play)
 		// all zeros and one 1 somewhere in the first half
 		// put the 1 symmetrically in the second half (real = real, imag = - imag)
 		
-		float freq; // fundamental Frequency in Hz, should be filled by a slider later on.
-		int freqIndex; // corresponding index in the fftData array
-		freq = 440; // Hz. Must be < Fs/2 (Nyquist theorem).
-		freqIndex = floor(freq*nfft/Fs); // if array index = k, then corresponding frequency is Fs/nfft*k
+		int freqIndex = 0; // corresponding index in the fftData array
+		if(freq > 0)
+		  freqIndex = floor(freq*nfft/Fs); // if array index = k, then corresponding frequency is Fs/nfft*k
 		float amplitude; // linear amplitude of the fundamental frequency 
 		amplitude=0.5; //(0.5 linear = -6 dBFS).
-		
-		
 		
 		fftData[0][0] = 0.0  ; // DC filter
 		fftData[0][1] = 0.0 ;
@@ -221,10 +204,6 @@ void Fft_synth_oneAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
 		
 		// do the backward fft
 		fft->processBackward(fftData, channelData, bufsize); // inverse fft
-		
-		// output the time data to audioBuffer
-		buffer.copyFrom(channel, 0, channelData, bufsize);
-		delete [] channelData;
 		
 		// Compute the phase shift of the fundamental during this buffer:
 		// shift = 2.pi.freq.elapsedTime = 2.pi.freq.bufsize/Fs

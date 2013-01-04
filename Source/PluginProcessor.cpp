@@ -129,14 +129,14 @@ void Fft_synth_oneAudioProcessor::prepareToPlay (double sampleRate, int samplesP
     // initialisation that you need..
 	
 	// Plan initialisation
-	nfft = samplesPerBlock; // As a starter. we then should aim at a finer resolution.
+	nfft = samplesPerBlock; // As a starter. we then should aim at a finer resolution. this is(hopefully) the same as bufsize
 	Fs   = sampleRate;
 	
 	if (fft == NULL){
-		fft = new FastFourierTransformer(nfft);
+		fft = new FastFourierTransformer(nfft);  //size of fft frame
 	}	
 
-	fftData = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * nfft);
+	fftData = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * nfft); //allocate memory for the frame
 	
 	// Phase init
 	phase = 0;
@@ -153,9 +153,9 @@ void Fft_synth_oneAudioProcessor::releaseResources()
 void Fft_synth_oneAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
 {
 	
-	int bufsize = buffer.getNumSamples();
-	juce::MidiBuffer::Iterator iterator (midiMessages);
-	juce::MidiMessage msg;
+	int bufsize = buffer.getNumSamples();	
+	juce::MidiBuffer::Iterator iterator (midiMessages);  //for iterating through incoming midiMessages
+	juce::MidiMessage msg;								 //both the message and the int are outputs for the iterator
 	int sampleNum;
 	while (iterator.getNextEvent (msg, sampleNum)){
 	  if (msg.isNoteOn()){
@@ -164,6 +164,7 @@ void Fft_synth_oneAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
 	  }else if(msg.isNoteOff()){
 	    freq = 0.0;
 	  }
+
 	  keyboard->processNextMidiEvent(msg);
 	}
 		
@@ -176,12 +177,13 @@ void Fft_synth_oneAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
 		
 		int freqIndex = 0; // corresponding index in the fftData array
 //		freq = 200;
-		if(freq > 0)
+		if(freq > 0) //calculate which bin the frequency falls in (step = Fs/nfft, i.e. 86Hz for 512 point fft)
+					 // freq/step = freq*nfft/step
 		  freqIndex = floor(freq*nfft/Fs); // if array index = k, then corresponding frequency is Fs/nfft*k
 		float amplitude; // linear amplitude of the fundamental frequency 
 		amplitude = vel*gain; //(0.5 linear = -6 dBFS).
 		 
-		fftData[0][0] = 0.0  ; // DC filter
+		fftData[0][0] = 0.0 ; // DC filter 
 		fftData[0][1] = 0.0 ;
 		fftData[nfft/2][0] = 0.0 ; // Nyquist
 		fftData[nfft/2][1] = 0.0 ;
@@ -189,14 +191,14 @@ void Fft_synth_oneAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
 		for (int i=1; i<(nfft/2);i++)
 		{
 			if (i==freqIndex){
-				fftData[i][0]=amplitude*cos(phase); // real=magnitude*cos(phase)
-				fftData[i][1]=amplitude*sin(phase); // imag=magnitude*sin(phase)
+				fftData[i][0]=amplitude*cos(phase) * 6; // real=magnitude*cos(phase)
+				fftData[i][1]=amplitude*sin(phase) * 6; // imag=magnitude*sin(phase)
 			}
 			else {
 				fftData[i][0]=0;
 				fftData[i][1]=0;
 			}
-			fftData[nfft-i][0]= fftData[i][0] ; // Fill up the second half symmetrically, real = real
+			fftData[nfft-i][0]=  fftData[i][0] ; // Fill up the second half symmetrically, real = real
 			fftData[nfft-i][1]= -fftData[i][1] ; // Fill up the second half symmetrically, imag=-imag
 		}		
 		
@@ -214,8 +216,10 @@ void Fft_synth_oneAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
 		// shift = 2.pi.freq.elapsedTime = 2.pi.freq.bufsize/Fs
 		phase += 2*M_PI*(bufsize - 1)*(freqIndex/nfft);
 		phase = fmod ( phase, 2*M_PI ) ; // we delete any 2*PI rotations, in order to keep the phase within limits.		
+		//phase is equal to the floating point remainder (fmod) from the above sum
     }
 
+	
     // In case we have more outputs than inputs, we'll clear any output
     // channels that didn't contain input data, (because these aren't
     // guaranteed to be empty - they may contain garbage).

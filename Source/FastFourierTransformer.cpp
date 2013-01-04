@@ -173,7 +173,6 @@ void FastFourierTransformer::compMult (fftw_complex* fftData_A, fftw_complex* ff
 	
 		
 		}
-
 }
  
 

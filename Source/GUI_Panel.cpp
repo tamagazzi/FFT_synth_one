@@ -3,7 +3,7 @@
 
   This is an automatically generated file created by the Jucer!
 
-  Creation date:  11 Dec 2012 3:31:29pm
+  Creation date:  4 Jan 2013 12:25:09pm
 
   Be careful when adding custom code to these files, as only the code within
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
@@ -31,14 +31,18 @@
 //==============================================================================
 GuiPanel::GuiPanel (Fft_synth_oneAudioProcessor* ptr )
     : Component (L"GUI_Panel"),
-      slider (0)
+      slider (0),
+      keyboard (0)
 {
     addAndMakeVisible (slider = new Slider (L"new slider"));
     slider->setRange (0, 1, 0);
     slider->setSliderStyle (Slider::Rotary);
     slider->setTextBoxStyle (Slider::NoTextBox, false, 80, 20);
     slider->addListener (this);
-	slider->setValue(1.0, true, false);
+
+    addAndMakeVisible (keyboard = new MidiKeyboardComponent (state, MidiKeyboardComponent::horizontalKeyboard));
+    keyboard->setName (L"keyboard");
+
 
     //[UserPreSize]
     //[/UserPreSize]
@@ -47,9 +51,9 @@ GuiPanel::GuiPanel (Fft_synth_oneAudioProcessor* ptr )
 
 
     //[Constructor] You can add your own custom stuff here..
-	
+
 	processor = ptr;
-	
+
     //[/Constructor]
 }
 
@@ -59,6 +63,7 @@ GuiPanel::~GuiPanel()
     //[/Destructor_pre]
 
     deleteAndZero (slider);
+    deleteAndZero (keyboard);
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -79,7 +84,8 @@ void GuiPanel::paint (Graphics& g)
 
 void GuiPanel::resized()
 {
-    slider->setBounds (99, 99, 199, 168);
+    slider->setBounds (96, 8, 199, 168);
+    keyboard->setBounds (8, 184, 384, 72);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -92,9 +98,9 @@ void GuiPanel::sliderValueChanged (Slider* sliderThatWasMoved)
     if (sliderThatWasMoved == slider)
     {
         //[UserSliderCode_slider] -- add your slider handling code here..
-		
+
 		processor->setParameterNotifyingHost(3, slider->getValue());
-		
+
         //[/UserSliderCode_slider]
     }
 
@@ -116,16 +122,19 @@ void GuiPanel::sliderValueChanged (Slider* sliderThatWasMoved)
 
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="GUI_Panel" componentName="GUI_Panel"
+<JUCER_COMPONENT documentType="Component" className="GuiPanel" componentName="GUI_Panel"
                  parentClasses="public Component" constructorParams="Fft_synth_oneAudioProcessor* ptr "
                  variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
                  overlayOpacity="0.330000013" fixedSize="0" initialWidth="600"
                  initialHeight="400">
   <BACKGROUND backgroundColour="ffffffff"/>
   <SLIDER name="new slider" id="16541420a934699c" memberName="slider" virtualName=""
-          explicitFocusOrder="0" pos="99 99 199 168" min="0" max="1" int="0"
+          explicitFocusOrder="0" pos="96 8 199 168" min="0" max="1" int="0"
           style="Rotary" textBoxPos="NoTextBox" textBoxEditable="1" textBoxWidth="80"
           textBoxHeight="20" skewFactor="1"/>
+  <GENERICCOMPONENT name="keyboard" id="199599a1cac6f9c" memberName="keyboard" virtualName=""
+                    explicitFocusOrder="0" pos="8 184 384 72" class="MidiKeyboardComponent"
+                    params="state, MidiKeyboardComponent::horizontalKeyboard"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

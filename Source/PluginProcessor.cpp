@@ -14,13 +14,12 @@
 
 //==============================================================================
 Fft_synth_oneAudioProcessor::Fft_synth_oneAudioProcessor()
+  : keyboard(NULL), freq(0.0)
 {
-	fft = NULL;
 }
 
 Fft_synth_oneAudioProcessor::~Fft_synth_oneAudioProcessor()
 {
-	deleteAndZero(fft);	
 }
 
 //==============================================================================
@@ -151,8 +150,6 @@ void Fft_synth_oneAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
 	juce::MidiBuffer::Iterator iterator (midiMessages);
 	juce::MidiMessage msg;
 	int sampleNum;
-	float freq;
-
 	while (iterator.getNextEvent (msg, sampleNum)){
 	  if (msg.isNoteOn()){
 //	    freq = MidiMessage::getMidiNoteInHertz(msg.getNoteNumber());
@@ -245,6 +242,22 @@ void Fft_synth_oneAudioProcessor::setStateInformation (const void* data, int siz
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
+}
+
+void Fft_synth_oneAudioProcessor::setKeyboardState(MidiKeyboardState* state){
+  if(keyboard != NULL)
+    keyboard->removeListener(this);
+  keyboard = state;
+  keyboard->addListener(this);
+}
+
+void Fft_synth_oneAudioProcessor::handleNoteOn(MidiKeyboardState *source, int midiChannel, int midiNoteNumber, float velocity){
+  freq = MidiMessage::getMidiNoteInHertz(midiNoteNumber);
+}
+
+void Fft_synth_oneAudioProcessor::handleNoteOff(MidiKeyboardState *source, int midiChannel, int midiNoteNumber){
+  freq = 0;
+
 }
 
 //==============================================================================

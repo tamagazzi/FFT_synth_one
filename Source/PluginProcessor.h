@@ -17,7 +17,7 @@
 //==============================================================================
 /**
 */
-class Fft_synth_oneAudioProcessor  : public AudioProcessor
+class Fft_synth_oneAudioProcessor  : public AudioProcessor, MidiKeyboardStateListener
 
 {
 public:
@@ -65,14 +65,17 @@ public:
     //==============================================================================
     void getStateInformation (MemoryBlock& destData);
     void setStateInformation (const void* data, int sizeInBytes);
-
+    void setKeyboardState(MidiKeyboardState* state);
+    void handleNoteOn(MidiKeyboardState *source, int midiChannel, int midiNoteNumber, float velocity);
+    void handleNoteOff(MidiKeyboardState *source, int midiChannel, int midiNoteNumber);
 private:
 	
-    MidiBuffer mBuf;
-	FastFourierTransformer* fft;
+    MidiKeyboardState* keyboard;
+    ScopedPointer<FastFourierTransformer> fft;
 	fftw_complex*			fftData;
 	int						nfft, Fs;
 	float					phase;
+	float freq;
 	
     //==============================================================================
 	

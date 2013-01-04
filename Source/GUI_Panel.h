@@ -3,7 +3,7 @@
 
   This is an automatically generated file created by the Jucer!
 
-  Creation date:  11 Dec 2012 3:31:29pm
+  Creation date:  4 Jan 2013 12:25:09pm
 
   Be careful when adding custom code to these files, as only the code within
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
@@ -19,8 +19,8 @@
   ==============================================================================
 */
 
-#ifndef __JUCER_HEADER_GUIPANEL_GUIPANEL_1ECFE922__
-#define __JUCER_HEADER_GUIPANEL_GUIPANEL_1ECFE922__
+#ifndef __JUCER_HEADER_GUIPANEL_GUIPANEL_19493BDE__
+#define __JUCER_HEADER_GUIPANEL_GUIPANEL_19493BDE__
 
 //[Headers]     -- You can add your own extra header files here --
 // #include "juce.h"
@@ -41,7 +41,7 @@
                                                                     //[/Comments]
 */
 class GuiPanel  : public Component,
-                   public SliderListener
+                  public SliderListener
 {
 public:
     //==============================================================================
@@ -50,6 +50,9 @@ public:
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
+    MidiKeyboardState* getKeyboardState(){
+      return &state;
+    }
     //[/UserMethods]
 
     void paint (Graphics& g);
@@ -58,25 +61,22 @@ public:
 
 
 
-    //==============================================================================
-    juce_UseDebuggingNewOperator
-
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
-	
+
 	Fft_synth_oneAudioProcessor* processor;
-	
+	MidiKeyboardState state;
+
     //[/UserVariables]
 
     //==============================================================================
     Slider* slider;
+    MidiKeyboardComponent* keyboard;
 
 
     //==============================================================================
-    // (prevent copy constructor and operator= being generated..)
-    GuiPanel (const GuiPanel&);
-    const GuiPanel& operator= (const GuiPanel&);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GuiPanel);
 };
 
 
-#endif   // __JUCER_HEADER_GUIPANEL_GUIPANEL_1ECFE922__
+#endif   // __JUCER_HEADER_GUIPANEL_GUIPANEL_19493BDE__

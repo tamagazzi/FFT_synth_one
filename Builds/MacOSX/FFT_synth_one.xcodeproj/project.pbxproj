@@ -40,6 +40,7 @@
 		72C439CC43D3560570C70E2B /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E341E9DFC44F23A8EF2B945D /* IOKit.framework */; };
 		7738CC5426FBD91F76B6B60E /* juce_gui_extra.mm in Sources */ = {isa = PBXBuildFile; fileRef = F0563B35C228BD4EA9B20E46 /* juce_gui_extra.mm */; };
 		7CD1DD77A22D2D85C3B910FE /* PluginProcessor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 97C4858255DB664365401029 /* PluginProcessor.cpp */; };
+		7F86CD6C1677898400AAE4C4 /* GUI_Panel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F86CD6A1677898400AAE4C4 /* GUI_Panel.cpp */; };
 		8A7B83744D27BD1629BA7423 /* CAAudioChannelLayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F9080B4502A3E0F66E9C2191 /* CAAudioChannelLayout.cpp */; settings = {COMPILER_FLAGS = "-w"; }; };
 		8B3FD0FFF1D0C626194F5511 /* AUCarbonViewControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EE1F3DBFC69890315C428216 /* AUCarbonViewControl.cpp */; settings = {COMPILER_FLAGS = "-w"; }; };
 		8F45BA1F52FE5B3F04C1918C /* juce_RTAS_DigiCode2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2D0DEF82C088F5E74734C722 /* juce_RTAS_DigiCode2.cpp */; settings = {COMPILER_FLAGS = "-w"; }; };
@@ -509,6 +510,8 @@
 		7F2FAA43B4747BBCC6FBE2A1 /* juce_DragAndDropContainer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = juce_DragAndDropContainer.h; path = ../../JuceLibraryCode/modules/juce_gui_basics/mouse/juce_DragAndDropContainer.h; sourceTree = SOURCE_ROOT; };
 		7F385F9DC47321C3AD1E6C19 /* juce_WildcardFileFilter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = juce_WildcardFileFilter.cpp; path = ../../JuceLibraryCode/modules/juce_gui_basics/filebrowser/juce_WildcardFileFilter.cpp; sourceTree = SOURCE_ROOT; };
 		7F3C4A250705AE7359F49C20 /* juce_ProgressBar.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = juce_ProgressBar.cpp; path = ../../JuceLibraryCode/modules/juce_gui_basics/widgets/juce_ProgressBar.cpp; sourceTree = SOURCE_ROOT; };
+		7F86CD6A1677898400AAE4C4 /* GUI_Panel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUI_Panel.cpp; path = ../../Source/GUI_Panel.cpp; sourceTree = SOURCE_ROOT; };
+		7F86CD6B1677898400AAE4C4 /* GUI_Panel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUI_Panel.h; path = ../../Source/GUI_Panel.h; sourceTree = SOURCE_ROOT; };
 		803BCAA275F0E5159BB54A5C /* juce_TemporaryFile.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = juce_TemporaryFile.h; path = ../../JuceLibraryCode/modules/juce_core/files/juce_TemporaryFile.h; sourceTree = SOURCE_ROOT; };
 		80AD0E1B511FA751C9E3F10D /* juce_RelativeCoordinate.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = juce_RelativeCoordinate.cpp; path = ../../JuceLibraryCode/modules/juce_gui_basics/positioning/juce_RelativeCoordinate.cpp; sourceTree = SOURCE_ROOT; };
 		80B36C78F0C9CD5DC1249597 /* juce_PositionableAudioSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = juce_PositionableAudioSource.h; path = ../../JuceLibraryCode/modules/juce_audio_basics/sources/juce_PositionableAudioSource.h; sourceTree = SOURCE_ROOT; };
@@ -1581,8 +1584,10 @@
 		524250AF1702811FF3B37C4F /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				25AC57D2D5B14A15A6BBFB25 /* FastFourierTransformer.cpp */,
+				7F86CD6A1677898400AAE4C4 /* GUI_Panel.cpp */,
+				7F86CD6B1677898400AAE4C4 /* GUI_Panel.h */,
 				98CD292C5EBD8EB9197F35D9 /* FastFourierTransformer.h */,
+				25AC57D2D5B14A15A6BBFB25 /* FastFourierTransformer.cpp */,
 				97C4858255DB664365401029 /* PluginProcessor.cpp */,
 				E3B15E1EA549B4905CD38B15 /* PluginProcessor.h */,
 				62E76BFCCC71008DBA8FF4D2 /* PluginEditor.cpp */,
@@ -2985,6 +2990,7 @@
 				63B7E6D2124A21283BCF3861 /* juce_video.mm in Sources */,
 				0165EE0898C6FEB9A61043B9 /* juce_VST_Wrapper.cpp in Sources */,
 				6BC648DD71C04D197C9AA23A /* juce_VST_Wrapper.mm in Sources */,
+				7F86CD6C1677898400AAE4C4 /* GUI_Panel.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

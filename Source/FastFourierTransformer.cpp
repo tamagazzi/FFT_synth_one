@@ -115,9 +115,10 @@ void FastFourierTransformer::processForward (float* channelData, fftw_complex* f
 
 // inverse fft conversion
 
-void FastFourierTransformer::processBackward (fftw_complex* fftData, float* channelData, int bufSize) {
+void FastFourierTransformer::processBackward (fftw_complex* fftData, int nfft, 
+					      float* channelData, int bufSize) {
 			
-	for(i = 0; i < bufSize; i++) {		
+	for(i = 0; i < nfft; i++) {
 		data[i][0] = fftData[i][0];        // stick your fft data in here!
 		data[i][1] = fftData[i][1];        // use this if your data is complex valued
 	}	

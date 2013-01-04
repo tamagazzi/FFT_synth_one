@@ -37,7 +37,7 @@ public:
 	//fft conversion
 	
 	void processForward	   (float* channelData, fftw_complex* fftData, int bufSize);
-	void processBackward   (fftw_complex* fftData, float* channelData, int bufSize);
+	void processBackward   (fftw_complex* fftData, int nfft, float* channelData, int bufSize);
 	
 	//fft gain
 	

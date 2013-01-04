@@ -153,7 +153,7 @@ void Fft_synth_oneAudioProcessor::releaseResources()
 void Fft_synth_oneAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
 {
 	
-	int bufsize = buffer.getNumSamples();	
+	int bufsize = buffer.getNumSamples();
 	juce::MidiBuffer::Iterator iterator (midiMessages);
 	juce::MidiMessage msg;
 	int sampleNum;
@@ -166,13 +166,6 @@ void Fft_synth_oneAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
 	  }
 	  keyboard->processNextMidiEvent(msg);
 	}
-
-    // This is the place where you'd normally do the guts of your plugin's
-    // audio processing...
-    for (int channel = 0; channel < getNumInputChannels(); ++channel)
-    {
-		// declare a channelData array of length bufsize=nfft
-                float* channelData = buffer.getSampleData (channel);		
 		
 		// Pass any incoming midi messages to our keyboard state object, and let it
 		// add messages to the buffer if the user is clicking on the on-screen keys
@@ -196,8 +189,8 @@ void Fft_synth_oneAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
 		for (int i=1; i<(nfft/2);i++)
 		{
 			if (i==freqIndex){
-				fftData[i][0]=amplitude*cos(phase)*bufsize; // real=magnitude*cos(phase)
-				fftData[i][1]=amplitude*sin(phase)*bufsize; // imag=magnitude*sin(phase)
+				fftData[i][0]=amplitude*cos(phase); // real=magnitude*cos(phase)
+				fftData[i][1]=amplitude*sin(phase); // imag=magnitude*sin(phase)
 			}
 			else {
 				fftData[i][0]=0;
@@ -207,14 +200,20 @@ void Fft_synth_oneAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
 			fftData[nfft-i][1]= -fftData[i][1] ; // Fill up the second half symmetrically, imag=-imag
 		}		
 		
+
+
+    // This is the place where you'd normally do the guts of your plugin's
+    // audio processing...
+    for (int channel = 0; channel < getNumInputChannels(); ++channel)
+    {
+                float* channelData = buffer.getSampleData (channel);
 		// do the backward fft
-		fft->processBackward(fftData, channelData, bufsize); // inverse fft
+		fft->processBackward(fftData, nfft, channelData, bufsize); // inverse fft
 		
 		// Compute the phase shift of the fundamental during this buffer:
 		// shift = 2.pi.freq.elapsedTime = 2.pi.freq.bufsize/Fs
-		phase += 2*M_PI*(bufsize - 1)*(freqIndex/nfft)/Fs;
-		phase = fmod ( phase, 2*M_PI ) ; // we delete any 2*PI rotations, in order to keep the phase within limits.
-		
+		phase += 2*M_PI*(bufsize - 1)*(freqIndex/nfft);
+		phase = fmod ( phase, 2*M_PI ) ; // we delete any 2*PI rotations, in order to keep the phase within limits.		
     }
 
     // In case we have more outputs than inputs, we'll clear any output

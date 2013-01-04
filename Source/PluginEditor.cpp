@@ -16,6 +16,9 @@
 Fft_synth_oneAudioProcessorEditor::Fft_synth_oneAudioProcessorEditor (Fft_synth_oneAudioProcessor* ownerFilter)
     : AudioProcessorEditor (ownerFilter)
 {
+	
+	panel = new GuiPanel(ownerFilter);
+	addAndMakeVisible(panel);
     // This is where our plugin's editor size is set.
     setSize (400, 300);
 }

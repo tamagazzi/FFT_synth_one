@@ -123,7 +123,7 @@ void Fft_synth_oneAudioProcessor::prepareToPlay (double sampleRate, int samplesP
 	
 	// Plan initialisation
 	nfft = samplesPerBlock; // As a starter. we then should aim at a finer resolution.
-	Fs = sampleRate;
+	Fs   = sampleRate;
 	
 	if (fft == NULL){
 		fft = new FastFourierTransformer(nfft);
@@ -133,7 +133,6 @@ void Fft_synth_oneAudioProcessor::prepareToPlay (double sampleRate, int samplesP
 	
 	// Phase init
 	phase = 0;
-	
 	
 }
 
@@ -149,14 +148,44 @@ void Fft_synth_oneAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
 	
 	int bufsize = buffer.getNumSamples();
 	
+	
+	juce::MidiBuffer output;	
+	juce::MidiBuffer::Iterator iterator (midiMessages);
+	juce::MidiMessage msg;
+	int sampleNum;
+	float MIDIfreq;
+	
+
+	while (iterator.getNextEvent (msg, sampleNum))
+	{
+		if (msg.isNoteOnOrOff())
+		{
+//			msg.setNoteNumber (msg.getNoteNumber());
+		}
+		
+		if (msg.isNoteOn())
+		{
+			MIDIfreq = MidiMessage::getMidiNoteInHertz(msg.getNoteNumber());
+		}
+		
+		output.addEvent (msg, sampleNum);
+	}
+	
+	midiMessages = output;
+	
+
     // This is the place where you'd normally do the guts of your plugin's
     // audio processing...
     for (int channel = 0; channel < getNumInputChannels(); ++channel)
     {
 		// declare a channelData array of length bufsize=nfft
-		float* channelData ;
+		float*		  channelData ;
 		channelData = new float[bufsize];
-
+	
+		
+		// Pass any incoming midi messages to our keyboard state object, and let it
+		// add messages to the buffer if the user is clicking on the on-screen keys
+		
         // define a fftData array of length bufsize (done in prepare to play)
 		// all zeros and one 1 somewhere in the first half
 		// put the 1 symmetrically in the second half (real = real, imag = - imag)
@@ -167,6 +196,8 @@ void Fft_synth_oneAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
 		freqIndex = floor(freq*nfft/Fs); // if array index = k, then corresponding frequency is Fs/nfft*k
 		float amplitude; // linear amplitude of the fundamental frequency 
 		amplitude=0.5; //(0.5 linear = -6 dBFS).
+		
+		
 		
 		fftData[0][0] = 0.0  ; // DC filter
 		fftData[0][1] = 0.0 ;
@@ -192,7 +223,7 @@ void Fft_synth_oneAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
 		fft->processBackward(fftData, channelData, bufsize); // inverse fft
 		
 		// output the time data to audioBuffer
-		buffer.copyFrom(0, 0, channelData, bufsize);
+		buffer.copyFrom(channel, 0, channelData, bufsize);
 		delete [] channelData;
 		
 		// Compute the phase shift of the fundamental during this buffer:
@@ -204,10 +235,11 @@ void Fft_synth_oneAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
     // In case we have more outputs than inputs, we'll clear any output
     // channels that didn't contain input data, (because these aren't
     // guaranteed to be empty - they may contain garbage).
+	
     for (int i = getNumInputChannels(); i < getNumOutputChannels(); ++i)
-    {
-        buffer.clear (i, 0, buffer.getNumSamples());
-    }
+	{
+			buffer.clear (i, 0, buffer.getNumSamples());
+	}
 }
 
 //==============================================================================

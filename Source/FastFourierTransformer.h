@@ -58,5 +58,9 @@ private:
 	
 };
 
+class convert {
+public:
+	double mtof(int midinote);
+};
 
 #endif  // __FASTFOURIERTRANSFORMER_H_9F2E8A4F__

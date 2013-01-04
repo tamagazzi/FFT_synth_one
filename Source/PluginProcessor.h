@@ -50,9 +50,10 @@ public:
     const String getOutputChannelName (int channelIndex) const;
     bool  isInputChannelStereoPair (int index) const;
     bool  isOutputChannelStereoPair (int index) const;
-
+	
     bool  acceptsMidi() const;
     bool  producesMidi() const;
+
 
     //==============================================================================
     int   getNumPrograms();
@@ -67,6 +68,7 @@ public:
 
 private:
 	
+    MidiBuffer mBuf;
 	FastFourierTransformer* fft;
 	fftw_complex*			fftData;
 	int						nfft, Fs;

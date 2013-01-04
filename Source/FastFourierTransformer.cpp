@@ -120,7 +120,7 @@ void FastFourierTransformer::processBackward (fftw_complex* fftData, float* chan
 	for(i = 0; i < bufSize; i++) {
 		
 		data[i][0] = fftData[i][0];        // stick your fft data in here!
-		data[i][1] = 0.0;        // use this if your data is complex valued
+		data[i][1] = fftData[i][1];        // use this if your data is complex valued
 	}	
 	
 	fftw_execute(plan_backward);
@@ -175,7 +175,6 @@ void FastFourierTransformer::compMult (fftw_complex* fftData_A, fftw_complex* ff
 	
 		
 		}
-
 }
  
 

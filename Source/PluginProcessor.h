@@ -74,11 +74,10 @@ private:
     ScopedPointer<FastFourierTransformer> fft;
 	fftw_complex*			fftData;
 	int						nfft, Fs;
-	float					phase;
-	float freq;
-	float   vel;
-	float gain;
-	
+	float gain;	
+	float freqs[128];
+	float phase[128];
+
     //==============================================================================
 	
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Fft_synth_oneAudioProcessor);

@@ -14,13 +14,12 @@
 
 //==============================================================================
 Fft_synth_oneAudioProcessor::Fft_synth_oneAudioProcessor()
+  : keyboard(NULL)
 {
-	fft = NULL;
 }
 
 Fft_synth_oneAudioProcessor::~Fft_synth_oneAudioProcessor()
 {
-	deleteAndZero(fft);	
 }
 
 //==============================================================================

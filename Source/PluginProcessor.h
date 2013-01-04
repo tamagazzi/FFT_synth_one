@@ -65,11 +65,13 @@ public:
     //==============================================================================
     void getStateInformation (MemoryBlock& destData);
     void setStateInformation (const void* data, int sizeInBytes);
-
+    void setKeyboardState(MidiKeyboardState* state){
+      keyboard = state;
+    }
 private:
 	
-    MidiBuffer mBuf;
-	FastFourierTransformer* fft;
+    MidiKeyboardState* keyboard;
+    ScopedPointer<FastFourierTransformer> fft;
 	fftw_complex*			fftData;
 	int						nfft, Fs;
 	float					phase;

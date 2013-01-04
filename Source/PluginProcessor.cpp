@@ -152,9 +152,10 @@ void Fft_synth_oneAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
 	int sampleNum;
 	while (iterator.getNextEvent (msg, sampleNum)){
 	  if (msg.isNoteOn()){
-//	    freq = MidiMessage::getMidiNoteInHertz(msg.getNoteNumber());
+	    freq = MidiMessage::getMidiNoteInHertz(msg.getNoteNumber());
+		vel = msg.getFloatVelocity();  
 	  }else if(msg.isNoteOff()){
-	  //  freq = 0.0;
+	    freq = 0.0;
 	  }
 	  output.addEvent (msg, sampleNum);
 	}
@@ -174,12 +175,12 @@ void Fft_synth_oneAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
 		// put the 1 symmetrically in the second half (real = real, imag = - imag)
 		
 		int freqIndex = 0; // corresponding index in the fftData array
-		freq = 200;
+//		freq = 200;
 		if(freq > 0)
 		  freqIndex = floor(freq*nfft/Fs); // if array index = k, then corresponding frequency is Fs/nfft*k
 		float amplitude; // linear amplitude of the fundamental frequency 
-		amplitude=0.1; //(0.5 linear = -6 dBFS).
-		
+		amplitude = vel; //(0.5 linear = -6 dBFS).
+		 
 		fftData[0][0] = 0.0  ; // DC filter
 		fftData[0][1] = 0.0 ;
 		fftData[nfft/2][0] = 0.0  ; // Nyquist

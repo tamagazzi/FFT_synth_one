@@ -192,10 +192,10 @@ void Fft_synth_oneAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
 		
 		float freq; // fundamental Frequency in Hz, should be filled by a slider later on.
 		int freqIndex; // corresponding index in the fftData array
-		freq = 440; // Hz. Must be < Fs/2 (Nyquist theorem).
+		freq = 1000; // Hz. Must be < Fs/2 (Nyquist theorem).
 		freqIndex = floor(freq*nfft/Fs); // if array index = k, then corresponding frequency is Fs/nfft*k
 		float amplitude; // linear amplitude of the fundamental frequency 
-		amplitude=0.5; //(0.5 linear = -6 dBFS).
+		amplitude=0.8; //(0.5 linear = -6 dBFS).
 		
 		
 		
@@ -228,7 +228,7 @@ void Fft_synth_oneAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
 		
 		// Compute the phase shift of the fundamental during this buffer:
 		// shift = 2.pi.freq.elapsedTime = 2.pi.freq.bufsize/Fs
-		phase += fmod ( 2*M_PI*freq*bufsize/Fs, 2*M_PI ) ; // we delete any 2*PI rotations, in order to keep the phase within limits.
+		phase += fmod ( 2*M_PI*freq*(bufsize - 1)/Fs, 2*M_PI ) ; // we delete any 2*PI rotations, in order to keep the phase within limits.
 		
     }
 

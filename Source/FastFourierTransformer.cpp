@@ -117,18 +117,15 @@ void FastFourierTransformer::processForward (float* channelData, fftw_complex* f
 
 void FastFourierTransformer::processBackward (fftw_complex* fftData, float* channelData, int bufSize) {
 			
-	for(i = 0; i < bufSize; i++) {
-		
+	for(i = 0; i < bufSize; i++) {		
 		data[i][0] = fftData[i][0];        // stick your fft data in here!
-		data[i][1] = 0.0;        // use this if your data is complex valued
+		data[i][1] = fftData[i][1];        // use this if your data is complex valued
 	}	
 	
 	fftw_execute(plan_backward);
 		
-	for(i = 0; i < bufSize; i++) {
-	
+	for(i = 0; i < bufSize; i++) {	
 		channelData[i] = ifft_result[i][0] / bufSize; 
-		
 		//it was distorting because we weren't dividing ifft_result[0] by bufSize - see demo code	
 	}		
 }

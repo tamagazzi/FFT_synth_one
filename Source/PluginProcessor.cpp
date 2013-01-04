@@ -155,9 +155,9 @@ void Fft_synth_oneAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
 
 	while (iterator.getNextEvent (msg, sampleNum)){
 	  if (msg.isNoteOn()){
-	    freq = MidiMessage::getMidiNoteInHertz(msg.getNoteNumber());
+//	    freq = MidiMessage::getMidiNoteInHertz(msg.getNoteNumber());
 	  }else if(msg.isNoteOff()){
-	    freq = 0.0;
+	  //  freq = 0.0;
 	  }
 	  output.addEvent (msg, sampleNum);
 	}
@@ -177,10 +177,11 @@ void Fft_synth_oneAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
 		// put the 1 symmetrically in the second half (real = real, imag = - imag)
 		
 		int freqIndex = 0; // corresponding index in the fftData array
+		freq = 200;
 		if(freq > 0)
 		  freqIndex = floor(freq*nfft/Fs); // if array index = k, then corresponding frequency is Fs/nfft*k
 		float amplitude; // linear amplitude of the fundamental frequency 
-		amplitude=0.8; //(0.5 linear = -6 dBFS).
+		amplitude=0.1; //(0.5 linear = -6 dBFS).
 		
 		fftData[0][0] = 0.0  ; // DC filter
 		fftData[0][1] = 0.0 ;
@@ -190,8 +191,8 @@ void Fft_synth_oneAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
 		for (int i=1; i<(nfft/2);i++)
 		{
 			if (i==freqIndex){
-				fftData[i][0]=amplitude*cos(phase); // real=magnitude*cos(phase)
-				fftData[i][1]=amplitude*sin(phase); // imag=magnitude*sin(phase)
+				fftData[i][0]=amplitude*cos(phase)*bufsize; // real=magnitude*cos(phase)
+				fftData[i][1]=amplitude*sin(phase)*bufsize; // imag=magnitude*sin(phase)
 			}
 			else {
 				fftData[i][0]=0;
@@ -207,7 +208,7 @@ void Fft_synth_oneAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
 		
 		// Compute the phase shift of the fundamental during this buffer:
 		// shift = 2.pi.freq.elapsedTime = 2.pi.freq.bufsize/Fs
-		phase += fmod ( 2*M_PI*freq*(bufsize - 1)/Fs, 2*M_PI ) ; // we delete any 2*PI rotations, in order to keep the phase within limits.
+		phase += fmod ( 2*M_PI*freqIndex*Fs/nfft*(bufsize - 1)/Fs, 2*M_PI ) ; // we delete any 2*PI rotations, in order to keep the phase within limits.
 		
     }
 

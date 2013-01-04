@@ -160,10 +160,12 @@ void Fft_synth_oneAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
 	while (iterator.getNextEvent (msg, sampleNum)){
 	  if (msg.isNoteOn()){
 	    freq = MidiMessage::getMidiNoteInHertz(msg.getNoteNumber());
-		vel = msg.getFloatVelocity();  
+	    vel = msg.getFloatVelocity();  
 	  }else if(msg.isNoteOff()){
 	    freq = 0.0;
 	  }
+
+	  keyboard->processNextMidiEvent(msg);
 	}
 
     // This is the place where you'd normally do the guts of your plugin's
@@ -190,7 +192,7 @@ void Fft_synth_oneAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
 		 
 		fftData[0][0] = 0.0 ; // DC filter 
 		fftData[0][1] = 0.0 ;
-		fftData[nfft/2][0] = 0.0  ; // Nyquist 
+		fftData[nfft/2][0] = 0.0 ; // Nyquist
 		fftData[nfft/2][1] = 0.0 ;
 		
 		for (int i=1; i<(nfft/2);i++)

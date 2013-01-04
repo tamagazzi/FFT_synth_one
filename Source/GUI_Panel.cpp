@@ -99,7 +99,7 @@ void GuiPanel::sliderValueChanged (Slider* sliderThatWasMoved)
     {
         //[UserSliderCode_slider] -- add your slider handling code here..
 
-		processor->setParameterNotifyingHost(3, slider->getValue());
+		processor->setParameterNotifyingHost(0, slider->getValue());
 
         //[/UserSliderCode_slider]
     }

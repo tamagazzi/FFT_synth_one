@@ -14,7 +14,7 @@
 
 //==============================================================================
 Fft_synth_oneAudioProcessor::Fft_synth_oneAudioProcessor()
-  : keyboard(NULL), freq(0.0)
+  : keyboard(NULL), freq(0.0), gain(0.8)
 {
 }
 
@@ -30,25 +30,33 @@ const String Fft_synth_oneAudioProcessor::getName() const
 
 int Fft_synth_oneAudioProcessor::getNumParameters()
 {
-    return 0;
+    return 1;
 }
 
 float Fft_synth_oneAudioProcessor::getParameter (int index)
 {
-    return 0.0f;
+  if(index == 0)
+    return gain;
+  return 0.0f;
 }
 
 void Fft_synth_oneAudioProcessor::setParameter (int index, float newValue)
 {
+  if(index == 0)
+    gain = newValue;
 }
 
 const String Fft_synth_oneAudioProcessor::getParameterName (int index)
 {
-    return String::empty;
+  if(index == 0)
+    return "Gain";
+  return String::empty;
 }
 
 const String Fft_synth_oneAudioProcessor::getParameterText (int index)
 {
+  if(index == 0)
+    return "Gain";
     return String::empty;
 }
 
@@ -176,8 +184,7 @@ void Fft_synth_oneAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
 		int freqIndex = 0; // corresponding index in the fftData array
 		if(freq > 0)
 		  freqIndex = floor(freq*nfft/Fs); // if array index = k, then corresponding frequency is Fs/nfft*k
-		float amplitude; // linear amplitude of the fundamental frequency 
-		amplitude=0.8; //(0.5 linear = -6 dBFS).
+		float amplitude = gain; // linear amplitude of the fundamental frequency 
 		
 		fftData[0][0] = 0.0  ; // DC filter
 		fftData[0][1] = 0.0 ;
@@ -196,8 +203,7 @@ void Fft_synth_oneAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
 			}
 			fftData[nfft-i][0]= fftData[i][0] ; // Fill up the second half symmetrically, real = real
 			fftData[nfft-i][1]= -fftData[i][1] ; // Fill up the second half symmetrically, imag=-imag
-		}
-		
+		}		
 		
 		// do the backward fft
 		fft->processBackward(fftData, channelData, bufsize); // inverse fft

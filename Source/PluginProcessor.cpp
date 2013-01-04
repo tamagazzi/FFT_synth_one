@@ -161,6 +161,8 @@ void Fft_synth_oneAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
 	  }else if(msg.isNoteOff()){
 	    freqs[msg.getNoteNumber()] = 0.0;
 	  }
+		
+	if(keyboard != NULL)
 	  keyboard->processNextMidiEvent(msg);
 	}
 

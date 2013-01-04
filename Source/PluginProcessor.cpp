@@ -186,7 +186,7 @@ void Fft_synth_oneAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
 		if(freq > 0)
 		  freqIndex = floor(freq*nfft/Fs); // if array index = k, then corresponding frequency is Fs/nfft*k
 		float amplitude; // linear amplitude of the fundamental frequency 
-		amplitude = vel*gain*1.2; //(0.5 linear = -6 dBFS).
+		amplitude = vel*gain; //(0.5 linear = -6 dBFS).
 		 
 		fftData[0][0] = 0.0  ; // DC filter
 		fftData[0][1] = 0.0 ;
@@ -212,7 +212,8 @@ void Fft_synth_oneAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
 		
 		// Compute the phase shift of the fundamental during this buffer:
 		// shift = 2.pi.freq.elapsedTime = 2.pi.freq.bufsize/Fs
-		phase += fmod ( 2*M_PI*freqIndex*Fs/nfft*(bufsize - 1)/Fs, 2*M_PI ) ; // we delete any 2*PI rotations, in order to keep the phase within limits.
+		phase += 2*M_PI*(bufsize - 1)*(freqIndex/nfft)/Fs;
+		phase = fmod ( phase, 2*M_PI ) ; // we delete any 2*PI rotations, in order to keep the phase within limits.
 		
     }
 
